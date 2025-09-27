@@ -1,0 +1,50 @@
+@startuml UC_Register_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+}
+
+actor "Người dùng ẩn danh" as User
+boundary "Hệ thống" as System
+database "CSDL" as DB
+control "Email Server" as Mail
+
+== Luồng cơ bản ==
+User -> System : Chọn "Đăng ký"
+System -> User : Hiển thị form đăng ký
+
+User -> System : Nhập email, mật khẩu, xác nhận mật khẩu\nNhấn "Xác nhận/Đăng ký"
+System -> System : Kiểm tra dữ liệu hợp lệ
+System -> DB : Kiểm tra email đã tồn tại?
+
+alt Email chưa tồn tại
+    System -> DB : Lưu tài khoản trạng thái "chưa xác thực"
+    System -> Mail : Gửi OTP qua email
+    Mail --> User : Nhận OTP
+    User -> System : Nhập OTP xác thực
+    System -> DB : Cập nhật trạng thái "đã xác thực"
+    System -> User : Hiển thị thông báo thành công\n→ Chuyển tới trang đăng nhập
+else Email đã tồn tại nhưng chưa xác thực
+    System -> Mail : Gửi lại OTP
+    Mail --> User : Nhận OTP
+    User -> System : Nhập OTP xác thực
+    System -> DB : Kích hoạt tài khoản "đã xác thực"
+    System -> User : Hiển thị thông báo thành công\n→ Chuyển tới trang đăng nhập
+else Email đã tồn tại và đã xác thực
+    System -> User : Thông báo "Đăng ký thất bại"
+end
+
+== Luồng ngoại lệ ==
+alt OTP sai hoặc hết hạn
+    System -> User : Thông báo "OTP không hợp lệ, vui lòng nhập lại hoặc gửi lại"
+else Lỗi hệ thống (DB, Mail server)
+    System -> User : Thông báo "Đăng ký thất bại, lỗi hệ thống"
+end
+
+@enduml

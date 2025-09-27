@@ -1,0 +1,133 @@
+@startuml ClassDiagramSciFun
+skinparam backgroundColor #ffffff
+skinparam classAttributeIconSize 0
+skinparam classAttributeFontSize 20
+
+' skinparam linetype ortho
+skinparam class {
+  BackgroundColor White
+  ArrowColor Black
+  BorderColor DarkGreen
+  FontSize 20
+
+}
+hide circle
+hide stereotype
+
+class User {
+  - email: string
+  - password: string
+  - fullname: string
+  - otp: string
+  - otpExpires: Date
+  - isVerified: boolean
+  - avatar: string
+  + register(email, password, fullname): bool
+  + login(email, password): bool
+  + verifyOTP(code): bool
+  + updateProfile(fullname, avatar): void
+  + changePassword(oldPass, newPass): bool
+  + getResults(): List<Result>
+  + getSubmissions(): List<Submission>
+}
+
+class Subject {
+  - name: string
+  - description: string
+  - maxTopics: number
+  - image: string
+  + addTopic(topic: Topic): void
+  + removeTopic(topicId: ObjectId): void
+  + getTopics(): List<Topic>
+}
+
+class Topic {
+  - name: string
+  - description: string
+  - subject: ObjectId
+  + addVideoLesson(lesson: VideoLesson): void
+  + addQuiz(quiz: Quiz): void
+  + getLessons(): List<VideoLesson>
+  + getQuizzes(): List<Quiz>
+}
+
+class VideoLesson {
+  - title: string
+  - url: string
+  - duration: number
+  - topic: ObjectId
+  + play(): void
+  + getDuration(): number
+}
+
+class Quiz {
+  - title: string
+  - description: string
+  - topic: ObjectId
+  + addQuestion(question: Question): void
+  + removeQuestion(questionId: ObjectId): void
+  + getQuestions(): List<Question>
+  + startQuiz(userId: ObjectId): Submission
+}
+
+class Question {
+  - text: string
+  - quiz: ObjectId
+  + addAnswer(answer: string, isCorrect: bool): void
+  + getAnswers(): List<string>
+}
+
+class Submission {
+  - userId: string
+  - quiz: ObjectId
+  - answers: map
+  - score: number
+  - createdAt: Date
+  + submitAnswers(answers: map): number
+  + calculateScore(): number
+  + getFeedback(): string
+}
+
+class Result {
+  - userId: string
+  - quiz: ObjectId
+  - bestScore: number
+  - attempts: number
+  - averageScore: number
+  - lastSubmissionAt: Date
+  - createdAt: Date
+  + updateResult(newScore: number): void
+  + getStatistics(): map
+}
+
+class Notification {
+  - userId: ObjectId
+  - type: string
+  - message: string
+  - read: boolean
+  - createdAt: string
+  + markAsRead(): void
+  + sendToUser(userId: ObjectId): void
+}
+' --- Quan hệ với aggregation/composition ---
+' Subject o-- "0..*" Topic        : aggregation
+' Topic o-- "0..*" VideoLesson    : aggregation
+' Quiz *-- "0..*" Question        : composition
+' --- Quan hệ ---
+User "1" -- "0..*" Notification
+User "1" -- "0..*" Submission
+User "1" -- "0..*" Result
+
+Subject "1" o-- "0..*" Topic
+Topic  "1" o-- "0..*" VideoLesson
+Topic "1" -- "0..*" Quiz
+Quiz "1" *-- "0..*" Question
+Quiz "1" -- "0..*" Submission
+Quiz "1" -- "0..*" Result
+
+' Submission "0..*" -- "1" Quiz
+' Submission "0..*" -- "1" User
+
+' Result "0..*" -- "1" Quiz
+' Result "0..*" -- "1" User
+@enduml

@@ -1,1 +1,3 @@
-# sci_fun_plant_uml
+# PlantUML:
+
+Ctrl + Shift + P
