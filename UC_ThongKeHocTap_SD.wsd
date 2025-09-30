@@ -1,0 +1,75 @@
+@startuml UC_ThongKeHocTap_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "User" as A
+boundary "Statistics Page" as B
+control "Statistics" as C
+entity "Database: Learning" as D
+
+A -> B : Truy cập mục "Thống kê học tập"
+activate A
+activate B
+B -> C : Yêu cầu hiển thị danh sách loại thống kê
+activate C
+C -> D : Truy vấn loại thống kê khả dụng
+activate D
+D --> C : Trả về danh sách loại thống kê
+deactivate D
+C --> B : Danh sách loại thống kê
+deactivate C
+B --> A : Hiển thị danh sách thống kê
+deactivate B
+deactivate A
+
+A -> B : Chọn loại thống kê muốn xem
+activate A
+activate B
+B -> C : Gửi yêu cầu thống kê theo loại
+activate C
+C -> D : Truy vấn dữ liệu học tập liên quan
+activate D
+D --> C : Trả về dữ liệu thống kê
+deactivate D
+
+C --> B : Kết quả thống kê (bảng/biểu đồ/số liệu)
+deactivate C
+B --> A : Hiển thị kết quả thống kê
+deactivate B
+deactivate A
+
+opt Người dùng thao tác thêm
+  A -> B : Lọc / Sắp xếp / Xuất báo cáo
+  activate A
+  activate B
+  B -> C : Yêu cầu xử lý dữ liệu
+  activate C
+  alt Xuất báo cáo
+    C -> D : Lấy dữ liệu đầy đủ
+    activate D
+    D --> C : Trả về dữ liệu
+    deactivate D
+    C --> B : File báo cáo (PDF/Excel)
+  else Lọc / Sắp xếp
+    C -> D : Truy vấn dữ liệu theo điều kiện
+    activate D
+    D --> C : Trả về dữ liệu đã lọc
+    deactivate D
+    C --> B : Dữ liệu đã xử lý
+  end
+  B --> A : Hiển thị hoặc tải file
+  deactivate C
+  deactivate B
+  deactivate A
+end
+
+@enduml

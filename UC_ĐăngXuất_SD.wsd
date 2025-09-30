@@ -1,0 +1,54 @@
+@startuml UC_ĐăngXuất_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "User" as A
+boundary "Logout Page" as B
+control "Logout" as C
+entity "Database : Session" as D
+
+
+
+A -> B : Chọn chức năng "Đăng Xuất"
+activate A
+activate B
+
+B -> C : Gửi yêu cầu đăng xuất
+deactivate B
+activate C
+
+alt Có thông báo xác nhận
+  C -> B : Hiển thị thông báo xác nhận
+  activate B
+  B -> A : Yêu cầu xác nhận
+  deactivate B
+  
+  A -> B : Người dùng xác nhận đăng xuất
+  activate B
+  B -> C : Gửi xác nhận đăng xuất
+  deactivate B
+end
+
+C -> D : Kết thúc phiên làm việc (xoá/đóng session)
+activate D
+D --> C : Xác nhận đã kết thúc phiên
+deactivate D
+
+C -> B : Điều hướng về trang đăng nhập/trang chủ
+activate B
+B --> A : Hiển thị màn hình đăng nhập/trang chủ
+deactivate B
+
+deactivate C
+deactivate A
+
+@enduml

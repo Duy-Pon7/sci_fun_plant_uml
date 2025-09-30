@@ -1,0 +1,60 @@
+@startuml UC_XemDapAn_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "User" as A
+boundary "Result/Answer Page" as B
+control "Result" as C
+entity "Database: Exam" as D
+
+
+A -> B : Truy cập mục "Kết quả/Đáp án"
+activate A
+activate B
+B -> C : Yêu cầu danh sách bài kiểm tra đã hoàn thành
+activate C
+C -> D : Lấy danh sách bài kiểm tra đã nộp
+activate D
+D --> C : Trả về danh sách bài kiểm tra
+deactivate D
+C --> B : Gửi danh sách bài kiểm tra
+deactivate C
+B --> A : Hiển thị danh sách bài kiểm tra
+deactivate B
+deactivate A
+
+A -> B : Chọn một bài kiểm tra để xem đáp án
+activate A
+activate B
+B -> C : Gửi yêu cầu xem đáp án bài kiểm tra
+activate C
+C -> D : Lấy đáp án chính thức và dữ liệu liên quan
+activate D
+D --> C : Trả về đáp án chính thức (+ lựa chọn của người dùng, lời giải nếu có)
+deactivate D
+
+alt Có quyền xem đáp án
+  C --> B : Trả về đáp án chi tiết
+  B --> A : Hiển thị đáp án từng câu hỏi
+  opt Hệ thống cho phép
+    B --> A : Hiển thị lựa chọn của người dùng và lời giải chi tiết
+  end
+else Không có quyền xem đáp án
+  C --> B : Trả về thông báo không thể xem đáp án
+  B --> A : Hiển thị thông báo
+end
+
+deactivate C
+deactivate B
+deactivate A
+
+@enduml

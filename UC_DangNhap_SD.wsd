@@ -1,0 +1,78 @@
+@startuml UC_DangNhap_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "User" as A
+boundary "Login Page" as B
+control "Login" as C
+entity "Database : User" as D
+control "Auth Server" as S
+
+
+A -> B : Chọn chức năng "Đăng nhập"
+activate A
+activate B
+B --> A : Hiển thị form đăng nhập
+deactivate B
+deactivate A
+
+
+A -> B : Nhập email, mật khẩu\nNhấn "Xác nhận/Đăng nhập"
+activate A
+activate B
+B -> C : Gửi thông tin đăng nhập
+activate C
+
+
+C -> C : Kiểm tra dữ liệu nhập
+alt Dữ liệu không hợp lệ
+  C --> B : Trả thông báo lỗi nhập liệu
+  deactivate C
+  B --> A : Hiển thị thông báo lỗi
+  deactivate B
+  deactivate A
+else Dữ liệu hợp lệ
+  C -> D : Kiểm tra thông tin đăng nhập
+  activate D
+  D --> C : Kết quả kiểm tra
+  activate C
+  deactivate D
+  deactivate C
+
+  alt Thông tin hợp lệ
+    C -> S : Xác thực phiên đăng nhập
+    activate S
+    S --> C : Phiên đăng nhập hợp lệ
+    activate C
+  deactivate S
+  deactivate C
+    C --> B : Trả kết quả thành công
+    activate B
+  deactivate C
+  deactivate D
+    B --> A : Hiển thị thông báo thành công\nĐiều hướng trang chính
+activate A
+  deactivate B
+  deactivate A
+  else Thông tin không hợp lệ
+    C --> B : Trả thông báo đăng nhập thất bại
+    activate B
+  deactivate C
+  deactivate B
+    B --> A : Hiển thị thông báo thất bại
+activate A
+  deactivate B
+  deactivate A
+  end
+end
+
+@enduml

@@ -1,0 +1,74 @@
+@startuml UC_XemVideoLyThuyet_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "User" as A
+boundary "Theory Video Page" as B
+control "Video" as C
+entity "Database: Media" as D
+control "Media Server" as S
+
+A -> B : Truy cập mục "Video lý thuyết"\nhoặc bài học
+activate A
+activate B
+B -> C : Yêu cầu danh sách / thông tin video
+activate C
+C -> D : Lấy danh sách video / video chính
+activate D
+D --> C : Trả danh sách / thông tin video
+deactivate D
+C --> B : Trả dữ liệu video
+deactivate C
+B --> A : Hiển thị danh sách / video
+deactivate B
+deactivate A
+
+A -> B : Chọn video muốn xem
+activate A
+activate B
+B -> C : Gửi yêu cầu phát video
+activate C
+C -> S : Yêu cầu stream video
+activate S
+S --> C : Trả luồng video
+deactivate S
+C --> B : Trả dữ liệu phát video
+deactivate C
+B --> A : Phát video + giao diện điều khiển
+deactivate B
+deactivate A
+
+opt Người dùng thao tác điều khiển (phát / tạm dừng / tua nhanh / chỉnh âm lượng)
+  A -> B : Gửi thao tác điều khiển
+  activate A
+  activate B
+  B -> S : Gửi yêu cầu điều khiển video
+  activate S
+  S --> B : Thực thi điều khiển
+  deactivate S
+  B --> A : Cập nhật trạng thái phát video
+  deactivate B
+  deactivate A
+end
+
+B -> C : Ghi nhận trạng thái đã xem (nếu cần)
+activate B
+activate C
+C -> D : Cập nhật trạng thái xem video
+activate D
+D --> C : Xác nhận cập nhật
+deactivate D
+C --> B : Trả kết quả
+deactivate C
+deactivate B
+
+@enduml

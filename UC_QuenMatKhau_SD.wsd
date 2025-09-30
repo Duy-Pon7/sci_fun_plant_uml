@@ -1,0 +1,91 @@
+@startuml UC_QuenMatKhau_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "User" as A
+boundary "Login Page" as B
+control "ForgotPassword" as C
+entity "Database : User" as D
+control "Mail Server" as S
+
+A -> B : Chọn "Quên mật khẩu"
+activate A
+activate B
+B -> C : Yêu cầu khôi phục mật khẩu
+activate C
+C --> B : Yêu cầu nhập email/số điện thoại
+deactivate C
+B --> A : Hiển thị form nhập thông tin
+deactivate B
+deactivate A
+
+A -> B : Nhập email/số điện thoại và gửi yêu cầu
+activate A
+activate B
+B -> C : Gửi thông tin khôi phục
+activate C
+C -> D : Kiểm tra thông tin hợp lệ
+activate D
+alt Thông tin hợp lệ
+  D --> C : Trả về thông tin hợp lệ
+  deactivate D
+  C -> S : Gửi email/SMS chứa liên kết hoặc mã xác thực
+  activate S
+  S --> C : Xác nhận gửi thành công
+  deactivate S
+  C --> B : Thông báo đã gửi mã/liên kết
+  deactivate C
+  B --> A : Hiển thị hướng dẫn kiểm tra email/SMS
+  deactivate B
+  deactivate A
+
+  A -> B : Mở liên kết hoặc nhập mã xác thực
+  activate A
+  activate B
+  B -> C : Xác thực mã/liên kết
+  activate C
+  C -> D : Kiểm tra mã/liên kết hợp lệ
+  activate D
+  D --> C : Xác thực thành công
+  deactivate D
+  C --> B : Yêu cầu nhập mật khẩu mới
+  deactivate C
+  B --> A : Hiển thị form nhập mật khẩu mới
+  deactivate B
+  deactivate A
+
+  A -> B : Nhập mật khẩu mới và xác nhận
+  activate A
+  activate B
+  B -> C : Gửi mật khẩu mới
+  activate C
+  C -> D : Cập nhật mật khẩu mới
+  activate D
+  D --> C : Xác nhận cập nhật thành công
+  deactivate D
+  C --> B : Thông báo đặt lại thành công
+  deactivate C
+  B --> A : Hiển thị thông báo thành công
+  deactivate B
+  deactivate A
+
+else Thông tin không hợp lệ
+  D --> C : Trả về lỗi "Không tồn tại"
+  deactivate D
+  C --> B : Thông báo thông tin không hợp lệ
+  deactivate C
+  B --> A : Hiển thị lỗi
+  deactivate B
+  deactivate A
+end
+
+@enduml

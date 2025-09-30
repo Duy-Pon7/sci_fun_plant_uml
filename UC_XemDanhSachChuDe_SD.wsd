@@ -1,0 +1,80 @@
+@startuml UC_XemDanhSachChuDe_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "Guest/User" as A
+boundary "Topic List Page" as B
+control "Topic" as C
+entity "Database: Topic" as D
+
+
+
+A -> B : Truy cập mục "Danh sách chủ đề"
+activate A
+activate B
+
+B -> C : Yêu cầu danh sách chủ đề
+activate C
+
+C -> D : Truy vấn danh sách chủ đề
+activate D
+D --> C : Trả về dữ liệu danh sách chủ đề
+deactivate D
+
+C --> B : Trả về danh sách chủ đề
+deactivate C
+
+B --> A : Hiển thị danh sách (tiêu đề, mô tả, ngày tạo, phân trang)
+deactivate B
+deactivate A
+
+
+A -> B : Cuộn hoặc chuyển trang
+activate A
+activate B
+
+B -> C : Yêu cầu dữ liệu phân trang / phân loại
+activate C
+
+C -> D : Truy vấn dữ liệu phân trang / phân loại
+activate D
+D --> C : Trả về dữ liệu
+deactivate D
+
+C --> B : Trả về dữ liệu mới
+deactivate C
+
+B --> A : Hiển thị dữ liệu bổ sung
+deactivate B
+deactivate A
+
+
+A -> B : Chọn một chủ đề để xem chi tiết
+activate A
+activate B
+
+B -> C : Yêu cầu chi tiết chủ đề
+activate C
+
+C -> D : Truy vấn chi tiết chủ đề
+activate D
+D --> C : Trả về chi tiết chủ đề
+deactivate D
+
+C --> B : Trả về nội dung chi tiết
+deactivate C
+
+B --> A : Hiển thị nội dung chi tiết chủ đề
+deactivate B
+deactivate A
+
+@enduml

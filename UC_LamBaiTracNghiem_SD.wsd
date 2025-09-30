@@ -1,0 +1,68 @@
+@startuml UC_LamBaiTracNghiem_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "User" as A
+boundary "Quiz Page" as B
+control "Quiz" as C
+entity "Database : Quiz" as D
+
+
+A -> B : Chọn bài trắc nghiệm
+activate A
+activate B
+B -> C : Yêu cầu thông tin bài trắc nghiệm
+activate C
+C -> D : Lấy thông tin bài trắc nghiệm
+activate D
+D --> C : Trả thông tin
+deactivate D
+C --> B : Trả thông tin bài trắc nghiệm
+deactivate C
+B --> A : Hiển thị thông tin bài trắc nghiệm
+deactivate B
+deactivate A
+
+A -> B : Bắt đầu làm bài
+activate A
+activate B
+loop Với mỗi câu hỏi
+  A -> B : Chọn đáp án
+end
+deactivate B
+deactivate A
+
+A -> B : Nhấn "Nộp bài"
+activate A
+activate B
+B -> C : Gửi kết quả làm bài
+activate C
+C -> D : Kiểm tra thời gian, lưu kết quả
+activate D
+D --> C : Xác nhận lưu kết quả
+deactivate D
+
+alt Có tính điểm tự động
+  C -> D : Tính điểm, lưu kết quả
+  activate D
+  D --> C : Kết quả điểm số
+  deactivate D
+  C --> B : Trả kết quả + thông báo thành công
+else Không tính điểm tự động
+  C --> B : Trả thông báo nộp bài thành công
+end
+deactivate C
+B --> A : Hiển thị thông báo / kết quả
+deactivate B
+deactivate A
+
+@enduml

@@ -1,0 +1,148 @@
+@startuml UC_ĐăngKý_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "User" as A
+boundary "SignUp Page" as B
+control "SignUp" as C
+entity "Database: User" as D
+control "Email Server" as S
+
+
+A -> B : Chọn chức năng "Đăng ký"
+activate A
+activate B
+B --> A : Hiển thị form đăng ký
+deactivate B
+deactivate A
+
+A -> B : Nhập thông tin (Email, Mật khẩu, Xác nhận mật khẩu)
+activate A
+activate B
+B -> C : Gửi yêu cầu đăng ký
+activate C
+deactivate B
+deactivate A
+
+C -> C : Kiểm tra hợp lệ dữ liệu
+alt Dữ liệu không hợp lệ
+  C --> B : Thông báo lỗi nhập liệu
+  activate B
+  deactivate C
+  deactivate B
+else Dữ liệu hợp lệ
+  C -> D : Kiểm tra email tồn tại
+  activate D
+  D --> C : Kết quả kiểm tra
+  activate C
+  deactivate D
+  deactivate C
+  alt Email chưa tồn tại
+    C -> D : Lưu tài khoản trạng thái "chưa xác thực"
+    activate D
+    D --> C : Lưu thành công
+  activate C
+  deactivate D
+  deactivate C
+
+    C -> S : Gửi OTP đến email
+    activate S
+    S --> C : Kết quả gửi OTP
+  activate C
+  deactivate S
+  deactivate C
+
+    C --> B : Yêu cầu nhập OTP
+    activate B
+    B --> A : Hiển thị form OTP
+  activate A
+  deactivate B
+  deactivate A
+
+    A -> B : Nhập OTP
+    activate A
+    activate B
+    B -> C : Gửi OTP xác thực
+    deactivate B
+    deactivate A
+
+    alt OTP hợp lệ
+      C -> D : Cập nhật trạng thái tài khoản "đã xác thực"
+      activate D
+      D --> C : Cập nhật thành công
+        activate C
+  deactivate D
+  deactivate C
+      C --> B : Thông báo đăng ký thành công + điều hướng trang đăng nhập
+  activate B
+  deactivate C
+  deactivate B
+    else OTP sai/hết hạn
+      C --> B : Thông báo lỗi OTP
+  activate B
+  deactivate C
+  deactivate B
+    end
+
+  else Email đã tồn tại
+    alt Tài khoản chưa xác thực
+      C -> S : Gửi lại OTP
+      activate S
+      S --> C : Gửi thành công
+      activate C
+  deactivate S
+  deactivate C
+      C -> B : Yêu cầu nhập OTP
+      activate B
+      B -> A : Hiển thị form OTP
+            activate A
+  deactivate B
+  deactivate A
+
+      A -> B : Nhập OTP
+      activate A
+      activate B
+      B -> C : Gửi OTP xác thực
+      activate C
+deactivate B
+deactivate A
+deactivate C
+
+      alt OTP hợp lệ
+        C -> D : Cập nhật trạng thái tài khoản "đã xác thực"
+        activate D
+        D --> C : Thành công
+        activate C
+  deactivate D
+  deactivate C
+        C --> B : Thông báo đăng ký thành công
+activate B
+  deactivate C
+  deactivate B
+      else OTP sai/hết hạn
+        C --> B : Thông báo lỗi OTP
+activate B
+  deactivate C
+  deactivate B
+      end
+
+    else Tài khoản đã xác thực
+      C --> B : Thông báo đăng ký thất bại (email đã tồn tại)
+activate B
+  deactivate C
+  deactivate B
+    end
+  end
+end
+
+
+@enduml

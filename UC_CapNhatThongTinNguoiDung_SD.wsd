@@ -1,0 +1,57 @@
+@startuml UC_CapNhatThongTinNguoiDung_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "User" as A
+boundary "User Profile Page" as B
+control "User Profile" as C
+entity "Database : User" as D 
+
+
+A -> B : Truy cập trang "Cập nhật thông tin"
+activate A
+activate B
+B -> C : Yêu cầu dữ liệu thông tin hiện tại
+activate C
+C -> D : Lấy thông tin người dùng
+activate D
+D --> C : Trả về thông tin
+deactivate D
+C --> B : Gửi dữ liệu thông tin hiện tại
+deactivate C
+B --> A : Hiển thị biểu mẫu thông tin
+deactivate B
+deactivate A
+
+A -> B : Chỉnh sửa thông tin và nhấn "Lưu/Cập nhật"
+activate A
+activate B
+B -> C : Gửi thông tin cập nhật
+activate C
+
+C -> C : Kiểm tra dữ liệu đầu vào
+alt Dữ liệu hợp lệ
+  C -> D : Lưu thay đổi vào CSDL
+  activate D
+  D --> C : Xác nhận lưu thành công
+  deactivate D
+  C --> B : Trả về thông báo thành công
+  B --> A : Hiển thị "Cập nhật thành công"
+else Dữ liệu không hợp lệ
+  C --> B : Trả về thông báo lỗi
+  B --> A : Hiển thị thông báo lỗi
+end
+deactivate C
+deactivate B
+deactivate A
+
+@enduml

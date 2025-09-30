@@ -1,0 +1,64 @@
+@startuml UC_XemDiem_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "User" as A
+boundary "Score Page" as B
+control "Score" as C
+entity "Database: Score" as D 
+
+
+A -> B : Truy cập mục "Kết quả/Bài làm"
+activate A
+activate B
+B -> C : Yêu cầu danh sách bài làm đã hoàn thành
+activate C
+C -> D : Truy vấn danh sách bài làm đã nộp
+activate D
+D --> C : Trả về danh sách bài làm
+deactivate D
+C --> B : Gửi danh sách bài làm
+deactivate C
+B --> A : Hiển thị danh sách bài làm
+deactivate B
+deactivate A
+
+A -> B : Chọn một bài làm để xem điểm
+activate A
+activate B
+B -> C : Gửi yêu cầu xem điểm
+activate C
+C -> D : Lấy điểm số tổng và chi tiết
+activate D
+D --> C : Trả về điểm số và kết quả chi tiết
+deactivate D
+
+C --> B : Trả về thông tin điểm số
+B --> A : Hiển thị điểm số tổng và chi tiết từng câu hỏi
+
+opt Người dùng chọn tải kết quả
+  B -> C : Gửi yêu cầu tải kết quả
+  activate C
+  C -> D : Ghi nhận lần tải kết quả/xem điểm (nếu cần)
+  activate D
+  D --> C : Xác nhận ghi nhận
+  deactivate D
+  C --> B : Trả về file kết quả
+  deactivate C
+  B --> A : Cung cấp file kết quả để tải xuống
+end
+
+deactivate C
+deactivate B
+deactivate A
+
+@enduml

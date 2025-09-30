@@ -1,0 +1,56 @@
+@startuml UC_XemThongBao_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "User" as A
+boundary "Notification Page" as B
+control "Notification" as C
+entity "Database: Notification" as D
+
+
+A -> B : Chọn mục "Thông báo" từ giao diện chính
+activate A
+activate B
+B -> C : Yêu cầu danh sách thông báo
+activate C
+C -> D : Lấy danh sách thông báo theo người dùng
+activate D
+D --> C : Trả về danh sách thông báo (sắp xếp theo thời gian)
+deactivate D
+C --> B : Gửi danh sách thông báo
+deactivate C
+B --> A : Hiển thị danh sách thông báo
+deactivate B
+deactivate A
+
+A -> B : Chọn một thông báo để xem chi tiết
+activate A
+activate B
+B -> C : Gửi yêu cầu xem chi tiết thông báo
+activate C
+C -> D : Lấy nội dung thông báo
+activate D
+D --> C : Trả về nội dung thông báo
+deactivate D
+C --> B : Gửi nội dung thông báo chi tiết
+B --> A : Hiển thị nội dung chi tiết thông báo
+
+C -> D : Cập nhật trạng thái thông báo từ "chưa đọc" sang "đã đọc"
+activate D
+D --> C : Xác nhận cập nhật trạng thái
+deactivate D
+
+deactivate C
+deactivate B
+deactivate A
+
+@enduml

@@ -1,0 +1,68 @@
+@startuml UC_TimKiemChuDe_SD
+skinparam backgroundColor #ffffff
+skinparam sequence {
+  ArrowColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor Wheat
+  ParticipantBorderColor DarkOrange
+  ParticipantBackgroundColor Wheat
+  ActorBorderColor DarkOrange
+  ActorBackgroundColor Wheat
+  GroupBackgroundColor #ccffcc
+}
+
+actor "Guest/User" as A
+boundary "Search Page" as B
+control "Search" as C
+entity "Database: Topic" as D
+
+A -> B : Truy cập mục "Tìm kiếm"
+activate A
+activate B
+B -> A : Hiển thị giao diện tìm kiếm
+deactivate B
+deactivate A
+
+A -> B : Nhập từ khóa / chọn bộ lọc
+activate A
+activate B
+B -> A : Hiển thị thông tin đã nhập
+deactivate B
+deactivate A
+
+A -> B : Nhấn nút "Tìm kiếm"
+activate A
+activate B
+B -> C : Gửi yêu cầu tìm kiếm (từ khóa/bộ lọc)
+activate C
+deactivate B
+
+C -> D : Truy vấn dữ liệu chủ đề phù hợp
+activate D
+D --> C : Trả về danh sách chủ đề
+deactivate D
+
+C -> B : Trả kết quả tìm kiếm
+activate B
+B -> A : Hiển thị danh sách kết quả
+deactivate B
+deactivate C
+deactivate A
+
+A -> B : Chọn một chủ đề để xem chi tiết
+activate A
+activate B
+B -> C : Gửi yêu cầu xem chi tiết chủ đề
+activate C
+C -> D : Lấy thông tin chi tiết chủ đề
+activate D
+D --> C : Trả về thông tin chi tiết
+deactivate D
+C -> B : Trả thông tin chi tiết
+activate B
+B -> A : Hiển thị chi tiết chủ đề
+deactivate B
+deactivate C
+deactivate A
+
+@enduml
